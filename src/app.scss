@@ -1,8 +1,9 @@
-html, body, .page-index, .sidebar, .main{
+html, body, .sidebar, .main{
   height: 100%;
 }
 
 .sidebar{
+  position: fixed;
   width: 240px;
   float: left;
   border-right: 1px solid #ccc;
@@ -40,6 +41,47 @@ html, body, .page-index, .sidebar, .main{
 }
 
 .main{
-  width: 100%;
   margin-left: 240px;
+  padding: 50px;
+}
+
+.page-index, .page-product{
+  height: 100%;
+}
+
+.product-content{
+  h3{
+    margin-top: 30px;
+  }
+  h4{
+    margin-top: 20px;
+  }
+
+  img{
+    display: block;
+
+    &.app{
+      width: 300px;
+      margin: 30px auto;
+    }
+
+    &.pc{
+      width: 1000px;
+      margin: 30px auto;
+    }
+  }
+
+  .clearfix:after { content:"."; display:block; height:0; visibility:hidden; clear:both; }
+  .line-imgs{
+    img{
+      float: left;
+      width: 250px;
+    }
+  }
+
+  p{
+    line-height: 2;
+    color: #5e6166;
+    padding: 10px 20px 20px 0;
+  }
 }
