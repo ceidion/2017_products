@@ -3,6 +3,8 @@ var haml = require('gulp-haml');
 var gutil = require("gulp-util");
 var webpack = require("webpack");
 var WebpackDevServer = require("webpack-dev-server");
+var fs = require("fs");
+var path = require('path');
 
 
 gulp.task("webpack-dev-server", function(callback) {
@@ -10,7 +12,7 @@ gulp.task("webpack-dev-server", function(callback) {
     var compiler = webpack(require('./webpack.config.js'));
 
     new WebpackDevServer(compiler, {
-      contentBase: "./dest",
+      contentBase: "../",
         // server and middleware options
     }).listen(8080, "localhost", function(err) {
         if(err) throw new gutil.PluginError("webpack-dev-server", err);
@@ -39,7 +41,7 @@ gulp.task("webpack", function(callback) {
 gulp.task('haml', function () {
   gulp.src('./src/haml/**/*.haml')
     .pipe(haml())
-    .pipe(gulp.dest('./dest'));
+    .pipe(gulp.dest('../'));
 });
 
 ///////////////////////////////////////
