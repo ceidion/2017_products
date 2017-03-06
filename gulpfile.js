@@ -1,53 +1,53 @@
 var gulp = require('gulp');
-var connect = require('gulp-connect');
 var haml = require('gulp-haml');
-var sass = require('gulp-sass');
-var coffee = require('gulp-coffee');
+var gutil = require("gulp-util");
+var webpack = require("webpack");
+var WebpackDevServer = require("webpack-dev-server");
 
-gulp.task('connect', function() {
-  connect.server({
-    root: 'app',
-    livereload: true
-  });
+
+gulp.task("webpack-dev-server", function(callback) {
+    // Start a webpack-dev-server
+    var compiler = webpack(require('./webpack.config.js'));
+
+    new WebpackDevServer(compiler, {
+      contentBase: "./dest",
+        // server and middleware options
+    }).listen(8080, "localhost", function(err) {
+        if(err) throw new gutil.PluginError("webpack-dev-server", err);
+        // Server listening
+        gutil.log("[webpack-dev-server]", "http://localhost:8080/webpack-dev-server/index.html");
+
+        // keep the server alive or continue?
+        // callback();
+    });
 });
 
 /////////////////////////////////////////////
+gulp.task("webpack", function(callback) {
+    // run webpack
+    webpack(
+      require('./webpack.config.js'),
+      function(err, stats) {
+        if(err) throw new gutil.PluginError("webpack", err);
+        gutil.log("[webpack]", stats.toString({
+            // output options
+        }));
+        callback();
+    });
+});
 
 gulp.task('haml', function () {
-  gulp.src('./app/**/*.haml')
+  gulp.src('./src/haml/**/*.haml')
     .pipe(haml())
-    .pipe(gulp.dest('./app'));
-
-  gulp.src('./app/**/*.haml')
-      .pipe(connect.reload());
-});
-
-gulp.task('scss', function () {
-  gulp.src('./app/**/*.scss')
-    .pipe(sass().on('error', sass.logError))
-    .pipe(gulp.dest('./app')
-    .pipe(connect.reload()));
-
-  gulp.src('./app/**/*.scss')
-      .pipe(connect.reload());
-});
-
-gulp.task('coffee', function() {
-  gulp.src('./app/**/*.coffee')
-    .pipe(coffee({bare: true}))
-    .pipe(gulp.dest('./app')
-    .pipe(connect.reload()));
-
-  gulp.src('./app/**/*.coffee')
-      .pipe(connect.reload());
+    .pipe(gulp.dest('./dest'));
 });
 
 ///////////////////////////////////////
 
 gulp.task('watch', function () {
-  gulp.watch(['./app/**/*.haml'], ['haml']);
-  gulp.watch(['./app/**/*.scss'], ['scss']);
-  gulp.watch(['./app/**/*.coffee'], ['coffee']);
+  gulp.watch(['./src/**/*.haml'], ['haml']);
 });
 
-gulp.task('default', ['connect', 'watch']);
+gulp.task('default', ['haml', 'watch', 'webpack-dev-server']);
+
+gulp.task('build', ['haml', 'webpack'])
